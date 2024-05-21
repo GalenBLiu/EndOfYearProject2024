@@ -10,7 +10,6 @@ month = int(input("What month? "))
 day = int(input("What day? "))
 
 ts = datetime(year, month, day)
-print(ts)
 
 #Start and end are the same because 1 day only
 start = end = ts
@@ -21,7 +20,8 @@ data = Daily(academies, start, end)
 
 #Fetch data in pd Dataframe
 data = data.fetch()
-print(data)
+avg_temp = data.at[ts, 'tavg']
+print(avg_temp)
 
 #If average temp on the day is < 0, FREEZING!
 

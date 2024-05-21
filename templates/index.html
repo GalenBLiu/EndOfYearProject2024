@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Average Temperature Finder</title>
+    <style>
+        body {
+            background-color: #add8e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        label, input {
+            margin: 10px 0;
+        }
+        input[type="submit"] {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Find Average Temperature</h1>
+        <form id="dateForm">
+            <label for="year">Year:</label>
+            <input type="text" id="year" name="year" required><br>
+            <label for="month">Month:</label>
+            <input type="text" id="month" name="month" required><br>
+            <label for="day">Day:</label>
+            <input type="text" id="day" name="day" required><br>
+            <input type="submit" value="Get Temperature">
+        </form>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#dateForm').on('submit', function(event) {
+                event.preventDefault();
+
+                var year = $('#year').val();
+                var month = $('#month').val();
+                var day = $('#day').val();
+
+                $.ajax({
+                    url: '/get_temperature',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ year: year, month: month, day: day }),
+                    success: function(response) {
+                        var resultText = 'Average Temperature: ' + response.tavg + '°C<br>' + response.snow_day;
+                        $('#result').html(resultText);
+                    },
+                    error: function(error) {
+                        $('#result').text('An error occurred.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
