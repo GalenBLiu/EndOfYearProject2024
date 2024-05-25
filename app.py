@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template, jsonify
 from datetime import datetime
 from meteostat import Point, Daily
+import requests
 
 app = Flask(__name__)
 
@@ -26,11 +27,32 @@ def get_temperature():
     avg_temp = data.at[ts, 'tavg']
     s = ''
     if avg_temp < 0:
-        s = 'Snow Day!'
+        s = 'Snow day!'
     else:
         s = 'No snow day :('
 
     return jsonify({'tavg' : avg_temp, 'snow_day' : s})
+
+@app.route('/current_weather', methods=['GET'])
+def current_weather():
+    base_url = "https://api.weather.gov/points/40.90243696271137,-74.0344921768194"
+
+    response = requests.get(base_url)
+
+    x = response.json()
+
+    forecast_url = x['properties']['forecast']
+    print(forecast_url)
+
+    r = requests.get(forecast_url)
+    forecast = r.json()
+    avg_24 = (forecast['properties']['periods'][0]['temperature'] + forecast['properties']['periods'][1]['temperature'])/2
+    s = ''
+    if (avg_24 < 0):
+        s = 'Snow day!'
+    else:
+        s = 'No snow day :('
+    return jsonify({'tavg' : avg_24, 'snow_day' : s})
 
 if __name__ == '__main__':
     app.run(debug=True)

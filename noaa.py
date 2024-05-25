@@ -12,5 +12,6 @@ print(forecast_url)
 
 r = requests.get(forecast_url)
 forecast = r.json()
-print(forecast['properties']['periods'][12])
+print(forecast['properties']['periods'][0]['temperature'])
+print(forecast['properties']['periods'][1]['temperature'])
 

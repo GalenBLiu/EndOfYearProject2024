@@ -27,7 +27,7 @@
         label, input {
             margin: 10px 0;
         }
-        input[type="submit"] {
+        input[type="submit"], input[type="button"] {
             margin-top: 20px;
             padding: 10px 20px;
             background-color: #007BFF;
@@ -36,7 +36,7 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        input[type="submit"]:hover {
+        input[type="submit"]:hover, input[type="button"]:hover {
             background-color: #0056b3;
         }
         #result {
@@ -57,6 +57,7 @@
             <input type="text" id="day" name="day" required><br>
             <input type="submit" value="Get Temperature">
         </form>
+        <input type="button" id="currentWeatherBtn" value="Current Weather">
         <p id="result"></p>
     </div>
 
@@ -76,6 +77,20 @@
                     data: JSON.stringify({ year: year, month: month, day: day }),
                     success: function(response) {
                         var resultText = 'Average Temperature: ' + response.tavg + '°C<br>' + response.snow_day;
+                        $('#result').html(resultText);
+                    },
+                    error: function(error) {
+                        $('#result').text('An error occurred.');
+                    }
+                });
+            });
+
+            $('#currentWeatherBtn').on('click', function() {
+                $.ajax({
+                    url: '/current_weather',
+                    method: 'GET',
+                    success: function(response) {
+                        var resultText = 'Forecasted Temperature: ' + response.tavg + '°C<br>' + response.snow_day;
                         $('#result').html(resultText);
                     },
                     error: function(error) {
