@@ -1,6 +1,6 @@
 from datetime import datetime
 import matplotlib.pyplot as plt
-from meteostat import Point, Daily
+from meteometric import Point, Daily
 
 # Set time period
 start = datetime(2018, 1, 1)
