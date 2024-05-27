@@ -2,7 +2,7 @@
 import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
-from meteometric import Point, Daily, Stations
+from meteostat import Point, Daily, Stations
 
 #Get time stamp data
 year = int(input("What year? "))
