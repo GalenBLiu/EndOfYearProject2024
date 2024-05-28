@@ -1,20 +1,20 @@
 from datetime import datetime
 import matplotlib.pyplot as plt
-from meteostat import Point, Daily
+from meteostat import Point, Daily, Hourly
 
 # Set time period
-start = datetime(2018, 1, 1)
-end = datetime(2018, 1, 2)
+start = datetime(2018, 3, 13, 0)
+end = datetime(2018, 3, 15, 0)
 print(type(start))
 # Create Point for Vancouver, BC
-vancouver = Point(49.2497, -123.1193, 70)
+Hackensack = Point(49.2497, -123.1193, 70)
 
 # Get daily data for 2018
-data = Daily(vancouver, start, end)
+data = Hourly(Hackensack, start, end)
 data = data.fetch()
-
+print(data)
 # Plot line chart including average, minimum and maximum temperature
-data.plot(y=['tavg', 'tmin', 'tmax'])
-print(type(data))
-print(data.head())
+#data.plot(y=['tavg', 'tmin', 'tmax'])
+#print(type(data))
+#print(data.head())
 # plt.show()
