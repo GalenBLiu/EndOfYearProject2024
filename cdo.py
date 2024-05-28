@@ -17,7 +17,7 @@ def get_historical_data(station_id, start_date, end_date, datatypeid):
         'limit': 1000  # You can adjust the limit based on your needs
     }
     
-    response = requests.get(BASE_URL + 'stations/GHCND:US1NJBG0043', headers=headers, params=params)
+    response = requests.get(BASE_URL + 'data', headers=headers, params=params)
     
     if response.status_code == 200:
         return response.json()
@@ -27,10 +27,10 @@ def get_historical_data(station_id, start_date, end_date, datatypeid):
         return None
 
 # Example usage
-station_id = 'GHCND:US1NJBG0064'  
-start_date = '2021-01-01'
-end_date = '2021-12-31'
-datatype_id = 'SNOW'
+station_id = 'GHCND:USW00094728'  
+start_date = '2024-01-01'
+end_date = '2024-05-28'
+datatype_id = 'SNWD'
 
 #US1NJBG0043 - Maywood *
 #US1NJBG0064 - Wood Ridge

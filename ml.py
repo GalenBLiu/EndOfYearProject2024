@@ -15,14 +15,16 @@ from meteostat import Point, Daily, Stations
 #priority for snow:
 #maywood --> tenafly --> wridge --> cenpark
 
+cancelled_dates = ['2022-01-07', '2023-02-28', '2024-02-13']
+
 maywood = 'GHCND:US1NJBG0043'
 wridge = 'GHCND:US1NJBG0064'
 cenpark = 'GHCND:USW00094728'
 tenafly = 'GHCND:US1NJBG0003'
 
-start_date = '2021-01-01'
+start_date = '2024-01-01'
 start_dt = pd.to_datetime(start_date, format='ISO8601')
-end_date = '2021-12-31'
+end_date = '2024-05-27'
 end_dt = pd.to_datetime(end_date, format='ISO8601')
 
 maywood_snow = get_historical_data(maywood, start_date, end_date, 'SNOW')
@@ -55,8 +57,14 @@ snow = []
 tmin = []
 tmax = []
 tavg = []
+cancelled = []
 for date in dates:
     datestr = date+'T00:00:00'
+
+    if date in cancelled_dates:
+        cancelled.append(1)
+    else:
+        cancelled.append(0)
 
     try:
         snow.append(maywood_snow['results'][maywood_snow_dates.index(datestr)]['value'])
@@ -89,7 +97,7 @@ print(tmin)
 print(tmax)
 print(tavg)
 
-data = {'Date': dates, 'Snow': snow, 'Tmin': tmin, 'Tmax': tmax, 'Tavg': tavg}
+data = {'Date': dates, 'Snow': snow, 'Tmin': tmin, 'Tmax': tmax, 'Tavg': tavg, 'Snow Day':cancelled}
 df = pd.DataFrame(data)
 
 print(df)
