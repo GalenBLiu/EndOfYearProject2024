@@ -2,19 +2,19 @@
 import pandas as pd
 from datetime import datetime
 import matplotlib.pyplot as plt
-from meteostat import Point, Daily, Stations
+from meteostat import Point, Daily, Stations, Hourly
 
 #Get time stamp data
 year = int(input("What year? "))
 month = int(input("What month? "))
 d = int(input("What day? "))
 
-ts = datetime(year, month, d)
+ts = datetime(year, month, d, hour=0)
 
 #Start and end are the same because 1 day only
 start = ts
 print(start)
-end = ts.replace(month=12)
+end = ts.replace(hour=23)
 print(end)
 
 
@@ -25,7 +25,7 @@ stations = stations.nearby(40.90243696271137, -74.0344921768194)
 station = stations.fetch(1)
 print(station)
 academies = Point(40.90243696271137, -74.0344921768194)
-data = Daily('KTEB0', start, end)
+data = Hourly('KTEB0', start, end)
 print(data.coverage())
 
 #Fetch data in pd Dataframe
@@ -39,7 +39,7 @@ print(data)
 # print(data.loc[:, 'snow'])
 for x in data.index:
     print(x)
-    print(data.loc[x, 'prcp'])
+    print(data.loc[x, 'snow'])
 
 #If average temp on the day is < 0, FREEZING!
 
