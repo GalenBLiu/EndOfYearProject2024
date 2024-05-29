@@ -1,121 +1,104 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.fft import fftfreq, irfft, fft, rfft, rfftfreq
-from scipy.io.wavfile import write
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.experimental import enable_iterative_imputer
 from sklearn.impute import IterativeImputer
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
-from clib import get_historical_data
-from datetime import datetime
-from meteostat import Point, Daily, Stations
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.model_selection import cross_val_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.metrics import accuracy_score
 
-#priority for snow:
-#maywood --> tenafly --> wridge --> cenpark
+data = pd.read_csv('2022-01-01-2024-05-27.csv', index_col=0)
+print(data.head())
+print(data.groupby('Snow Day').count())
+print(data.isnull().sum())
 
-cancelled_dates = ['2022-01-07', '2023-02-28', '2024-02-13']
+X = data.drop(['Snow Day', 'Date'], axis=1)
+y = data['Snow Day']
 
-maywood = 'GHCND:US1NJBG0043'
-wridge = 'GHCND:US1NJBG0064'
-cenpark = 'GHCND:USW00094728'
-tenafly = 'GHCND:US1NJBG0003'
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0, shuffle=False)
+y_train = y_train.values.reshape(-1,1)
+y_test = y_test.values.reshape(-1,1)
+ 
+print("X_train shape:",X_train.shape)
+print("X_test shape:",X_test.shape)
+print("y_train shape:",y_train.shape)
+print("y_test shape:",y_test.shape)
 
-start_date = '2024-01-01'
-start_dt = pd.to_datetime(start_date, format='ISO8601')
-end_date = '2024-05-27'
-end_dt = pd.to_datetime(end_date, format='ISO8601')
+result_dict_train = {}
+result_dict_test = {}
 
-maywood_snow = get_historical_data(maywood, start_date, end_date, 'SNOW')
-wridge_snow = get_historical_data(wridge, start_date, end_date, 'SNOW')
-tenafly_snow = get_historical_data(tenafly, start_date, end_date, 'SNOW')
-cenpark_snow = get_historical_data(cenpark, start_date, end_date, 'SNOW')
-cenpark_tmin = get_historical_data(cenpark, start_date, end_date, 'TMIN')
-cenpark_tmax = get_historical_data(cenpark, start_date, end_date, 'TMAX')
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.fit_transform(X_test)
 
-maywood_snow_dates = [record['date'] for record in maywood_snow['results']]
-wridge_snow_dates = [record['date'] for record in wridge_snow['results']]
-tenafly_snow_dates = [record['date'] for record in tenafly_snow['results']]
-cenpark_snow_dates = [record['date'] for record in cenpark_snow['results']]
-cenpark_tmin_dates = [record['date'] for record in cenpark_tmin['results']]
-cenpark_tmax_dates = [record['date'] for record in cenpark_tmax['results']]
+reg = LogisticRegression(random_state = 42)
+accuracies = cross_val_score(reg, X_train, y_train, cv=5)
+reg.fit(X_train,y_train)
+y_pred = reg.predict(X_test)
+ 
+result_dict_train["Logistic Train Score"] = np.mean(accuracies)
+result_dict_test["Logistic Test Score"] = reg.score(X_test,y_test)
 
-dates = []
-for date in pd.date_range(start=start_dt, end=end_dt, freq='D'):
-    date_string = date.strftime('%Y-%m-%d')
-    dates.append(date_string)
+knn = KNeighborsClassifier()
+accuracies = cross_val_score(knn, X_train, y_train, cv=5)
+knn.fit(X_train,y_train)
+y_pred = knn.predict(X_test)
+ 
+result_dict_train["KNN Train Score"] = np.mean(accuracies)
+result_dict_test["KNN Test Score"] = knn.score(X_test,y_test)
 
-def get_tavg(ts):
-    start = end = ts
-    academies = Point(40.90243696271137, -74.0344921768194)
-    data = Daily(academies, start, end)
-    data = data.fetch()
-    return data.at[ts, 'tavg']
+svc = SVC(random_state = 42)
+accuracies = cross_val_score(svc, X_train, y_train, cv=5)
+svc.fit(X_train,y_train)
+y_pred = svc.predict(X_test)
+ 
+result_dict_train["SVM Train Score"] = np.mean(accuracies)
+result_dict_test["SVM Test Score"] = svc.score(X_test,y_test)
 
-snow = []
-tmin = []
-tmax = []
-tavg = []
-cancelled = []
-for date in dates:
-    datestr = date+'T00:00:00'
+dtc = DecisionTreeClassifier(random_state = 42)
+accuracies = cross_val_score(dtc, X_train, y_train, cv=5)
+dtc.fit(X_train,y_train)
+y_pred = dtc.predict(X_test)
+ 
+result_dict_train["Decision Tree Train Score"] = np.mean(accuracies)
+result_dict_test["Decision Tree Test Score"] = dtc.score(X_test,y_test)
 
-    if date in cancelled_dates:
-        cancelled.append(1)
-    else:
-        cancelled.append(0)
+rfc = RandomForestClassifier(random_state = 42)
+accuracies = cross_val_score(rfc, X_train, y_train, cv=5)
+rfc.fit(X_train,y_train)
+y_pred = rfc.predict(X_test)
+ 
+result_dict_train["Random Forest Train Score"] = np.mean(accuracies)
+result_dict_test["Random Forest Test Score"] = rfc.score(X_test,y_test)
 
-    try:
-        snow.append(maywood_snow['results'][maywood_snow_dates.index(datestr)]['value'])
-    except ValueError:
-        try:
-            snow.append(tenafly_snow['results'][tenafly_snow_dates.index(datestr)]['value'])
-        except ValueError:
-            try:
-                snow.append(wridge_snow['results'][wridge_snow_dates.index(datestr)]['value'])
-            except ValueError:
-                try:
-                    snow.append(cenpark_snow['results'][cenpark_snow_dates.index(datestr)]['value'])
-                except ValueError:
-                    snow.append(float('nan'))
-    
-    try:
-        tmin.append(cenpark_tmin['results'][cenpark_tmin_dates.index(datestr)]['value'])
-    except ValueError:
-        tmin.append(float('nan'))
-    
-    try:
-        tmax.append(cenpark_tmax['results'][cenpark_tmax_dates.index(datestr)]['value'])
-    except ValueError:
-        tmax.append(float('nan'))
+gnb = GaussianNB()
+accuracies = cross_val_score(gnb, X_train, y_train, cv=5)
+gnb.fit(X_train,y_train)
+y_pred = gnb.predict(X_test)
 
-    tavg.append(get_tavg(pd.to_datetime(date, format='%Y-%m-%d')))
+result_dict_train["Gaussian NB Train Score"] = np.mean(accuracies)
+result_dict_test["Gaussian NB Test Score"] = gnb.score(X_test,y_test)
 
-print(snow)
-print(tmin)
-print(tmax)
-print(tavg)
+df_result_test = pd.DataFrame.from_dict(result_dict_train,orient = "index", columns=["Score"])
+df_result_test
 
-data = {'Date': dates, 'Snow': snow, 'Tmin': tmin, 'Tmax': tmax, 'Tavg': tavg, 'Snow Day':cancelled}
-df = pd.DataFrame(data)
-
-print(df)
-df.to_csv(f'{start_date}-{end_date}.csv')
-
-# columns = ['mass_1_source', 'mass_2_source', 'luminosity_distance', 'chi_eff', 
-#       'total_mass_source', 'chirp_mass_source', 'redshift', 'far', 'p_astro', 'final_mass_source'] 
-
-# data = cl.iterativelyImpute('181entries.csv', dropMarginal=True)
-
-# y = data.GPS
-# X = data[columns]
-# trainX, valX, trainy, valy = train_test_split(X, y, random_state=1, shuffle=True)
-# for nodes in [2,3,4,5,40,50,60,70,80,90]:
-#     model = RandomForestRegressor(max_leaf_nodes=nodes, random_state=1)
-#     model.fit(trainX, trainy)
-#     preds_val = model.predict(valX)
-#     print(preds_val)
-#     print(valy.head())
-#     mae = mean_absolute_error(valy, preds_val)
-#     print("Max leaf nodes: %d  \t\t Mean Absolute Error:  %d" %(nodes, mae))
+import seaborn as sns
+ 
+fig,ax = plt.subplots(1,2,figsize=(20,5))
+sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[0])
+sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[1])
+ax[0].set_xticklabels(df_result_test.index,rotation = 75)
+ax[1].set_xticklabels(df_result_test.index,rotation = 75)
+plt.show()
