@@ -102,3 +102,6 @@ sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[1])
 ax[0].set_xticklabels(df_result_test.index,rotation = 75)
 ax[1].set_xticklabels(df_result_test.index,rotation = 75)
 plt.show()
+
+
+#hello nick
