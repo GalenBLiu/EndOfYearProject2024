@@ -104,4 +104,3 @@ ax[1].set_xticklabels(df_result_test.index,rotation = 75)
 plt.show()
 
 
-#hello nick
