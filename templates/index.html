@@ -30,7 +30,7 @@
             cursor: pointer;
         }
         input[type="submit"]:hover, input[type="button"]:hover {
-            background-color: #0056b3;
+            background-color: blue;
         }
         #result {
             margin-top: 20px;
@@ -49,7 +49,9 @@
         <p></p>
         <div class="box-two">
             <h1>Report a snow day!</h1>
-            <input type="button" id="snowDayConfirmed" value="Snow day today!">
+            <a href="/report">
+                <input type="button" id="reportBtn" value="Report!">
+              </a>
         </div>
     </div>
 
@@ -60,15 +62,15 @@
                     url: '/current_weather',
                     method: 'GET',
                     success: function(response) {
-                        var resultText = 'Forecasted Temperature: ' + response.tavg + '°C<br>' + response.snow_day;
+                        var resultText = 'Forecasted Temperature: ' + response.tavg + '°F<br>' + response.snow_day;
                         $('#result').html(resultText);
                     },
                     error: function(error) {
-                        $('#result').text('An error occurred.');
+                        $('#result').text('An error occurred. Please restart the page.');
                     }
                 });
             });
-        });
+            });
     </script>
 </body>
 </html>
