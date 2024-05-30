@@ -71,7 +71,13 @@ dtc = DecisionTreeClassifier(random_state = 42)
 accuracies = cross_val_score(dtc, X_train, y_train, cv=5)
 dtc.fit(X_train,y_train)
 y_pred = dtc.predict(X_test)
- 
+
+print(y_test)
+print(y_pred)
+
+print("Train Score:",np.mean(accuracies))
+print("Test Score:",dtc.score(X_test,y_test))
+
 result_dict_train["Decision Tree Train Score"] = np.mean(accuracies)
 result_dict_test["Decision Tree Test Score"] = dtc.score(X_test,y_test)
 
