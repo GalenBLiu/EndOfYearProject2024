@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Average Temperature Finder</title>
+    <style>
+        body {
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Courier, monospace;
+        }
+        .container {
+            text-align: center;
+        }
+        .box-one, .box-two {
+            background-color: white;
+            padding: 20px;
+            border-radius: 20px;
+        }
+        input[type="submit"], input[type="button"] {
+            margin-top: 0px;
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: black;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover, input[type="button"]:hover {
+            background-color: white;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Please let us know if there was a snow day today!</h1>
+        <h1>This is to help our future predictions!</h1> 
+        <div class="box-one">
+            <h1>Confirm</h1>
+            <input type="button" id="snowDayConfirmed" value="Confirm Snow Day">
+            <h1>No snow day</h1>
+            <input type="button" id="snowDayConfirmed" value="No Snow Day">
+        </div>
+        <p></p>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#calculateBtn').on('click', function() {
+                $.ajax({
+                    url: '/current_weather',
+                    method: 'GET',
+                    success: function(response) {
+                        var resultText = 'Forecasted Temperature: ' + response.tavg + '°C<br>' + response.snow_day;
+                        $('#result').html(resultText);
+                    },
+                    error: function(error) {
+                        $('#result').text('An error occurred. Please restart the page.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
