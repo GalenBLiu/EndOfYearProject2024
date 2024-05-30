@@ -8,6 +8,9 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
+@app.route('/report')
+def report():
+    return render_template('report.html')
 
 @app.route('/get_temperature', methods=['POST'])
 def get_temperature():
@@ -46,7 +49,12 @@ def current_weather():
 
     r = requests.get(forecast_url)
     forecast = r.json()
-    avg_24 = (forecast['properties']['periods'][0]['temperature'] + forecast['properties']['periods'][1]['temperature'])/2
+
+    date = datetime.now()
+    hour = date.hour
+
+    
+    avg_24 = (forecast['properties']['periods'][0]['temperature'] + forecast['properties']['periods'][hour]['temperature'])/2
     s = ''
     if (avg_24 < 0):
         s = 'Snow day!'
