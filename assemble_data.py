@@ -1,13 +1,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.experimental import enable_iterative_imputer
-from sklearn.impute import IterativeImputer
-from sklearn.metrics import mean_absolute_error
-from sklearn.model_selection import train_test_split
 from clib import get_historical_data
-from datetime import datetime
 from meteostat import Point, Daily, Stations
 
 #priority for snow:
@@ -19,25 +13,35 @@ maywood = 'GHCND:US1NJBG0043'
 wridge = 'GHCND:US1NJBG0064'
 cenpark = 'GHCND:USW00094728'
 tenafly = 'GHCND:US1NJBG0003'
+palpark = 'GHCND:US1NJBG0018'
 
-start_date = '2024-01-01'
+start_date = '2020-01-01'
 start_dt = pd.to_datetime(start_date, format='ISO8601')
-end_date = '2024-05-27'
+end_date = '2020-12-31'
 end_dt = pd.to_datetime(end_date, format='ISO8601')
 
 maywood_snow = get_historical_data(maywood, start_date, end_date, 'SNOW')
+palpark_snow = get_historical_data(palpark, start_date, end_date, 'SNOW')
 wridge_snow = get_historical_data(wridge, start_date, end_date, 'SNOW')
 tenafly_snow = get_historical_data(tenafly, start_date, end_date, 'SNOW')
 cenpark_snow = get_historical_data(cenpark, start_date, end_date, 'SNOW')
 cenpark_tmin = get_historical_data(cenpark, start_date, end_date, 'TMIN')
 cenpark_tmax = get_historical_data(cenpark, start_date, end_date, 'TMAX')
 
-maywood_snow_dates = [record['date'] for record in maywood_snow['results']]
-wridge_snow_dates = [record['date'] for record in wridge_snow['results']]
-tenafly_snow_dates = [record['date'] for record in tenafly_snow['results']]
-cenpark_snow_dates = [record['date'] for record in cenpark_snow['results']]
-cenpark_tmin_dates = [record['date'] for record in cenpark_tmin['results']]
-cenpark_tmax_dates = [record['date'] for record in cenpark_tmax['results']]
+if maywood_snow:
+    maywood_snow_dates = [record['date'] for record in maywood_snow['results']]
+if palpark_snow:
+    palpark_snow_dates = [record['date'] for record in palpark_snow['results']]
+if wridge_snow:
+    wridge_snow_dates = [record['date'] for record in wridge_snow['results']]
+if tenafly_snow:
+    tenafly_snow_dates = [record['date'] for record in tenafly_snow['results']]
+if cenpark_snow:
+    cenpark_snow_dates = [record['date'] for record in cenpark_snow['results']]
+if cenpark_tmin:
+    cenpark_tmin_dates = [record['date'] for record in cenpark_tmin['results']]
+if cenpark_tmax:
+    cenpark_tmax_dates = [record['date'] for record in cenpark_tmax['results']]
 
 dates = []
 for date in pd.date_range(start=start_dt, end=end_dt, freq='D'):
@@ -66,18 +70,21 @@ for date in dates:
 
     try:
         snow.append(maywood_snow['results'][maywood_snow_dates.index(datestr)]['value'])
-    except ValueError:
+    except Exception:
         try:
-            snow.append(tenafly_snow['results'][tenafly_snow_dates.index(datestr)]['value'])
-        except ValueError:
+            snow.append(tenafly_snow['results'][palpark_snow_dates.index(datestr)]['value'])
+        except Exception:
             try:
-                snow.append(wridge_snow['results'][wridge_snow_dates.index(datestr)]['value'])
-            except ValueError:
+                snow.append(tenafly_snow['results'][tenafly_snow_dates.index(datestr)]['value'])
+            except Exception:
                 try:
-                    snow.append(cenpark_snow['results'][cenpark_snow_dates.index(datestr)]['value'])
-                except ValueError:
-                    snow.append(float('nan'))
-    
+                    snow.append(wridge_snow['results'][wridge_snow_dates.index(datestr)]['value'])
+                except Exception:
+                    try:
+                        snow.append(cenpark_snow['results'][cenpark_snow_dates.index(datestr)]['value'])
+                    except Exception:
+                        snow.append(float('nan'))
+        
     try:
         tmin.append(cenpark_tmin['results'][cenpark_tmin_dates.index(datestr)]['value'])
     except ValueError:

@@ -27,15 +27,17 @@ def get_historical_data(station_id, start_date, end_date, datatypeid):
         return None
 
 # Example usage
-station_id = 'GHCND:USW00094728'  
+station_id = 'GHCND:US1NJBG0018'  
 start_date = '2024-01-01'
-end_date = '2024-05-28'
-datatype_id = 'SNWD'
+end_date = '2024-05-31'
+datatype_id = 'SNOW'
 
 #US1NJBG0043 - Maywood *
 #US1NJBG0064 - Wood Ridge
 #USW00094728 - Central Park NY
 #US1NJBG0003 - Tenafly
+#US1NJBG0018 - Pal Park
+#USW00094741 - Teterboro airport
 
 historical_data = get_historical_data(station_id, start_date, end_date, datatype_id)
 
