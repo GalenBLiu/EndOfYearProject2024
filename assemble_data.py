@@ -72,7 +72,7 @@ for date in dates:
         snow.append(maywood_snow['results'][maywood_snow_dates.index(datestr)]['value'])
     except Exception:
         try:
-            snow.append(tenafly_snow['results'][palpark_snow_dates.index(datestr)]['value'])
+            snow.append(palpark_snow['results'][palpark_snow_dates.index(datestr)]['value'])
         except Exception:
             try:
                 snow.append(tenafly_snow['results'][tenafly_snow_dates.index(datestr)]['value'])
