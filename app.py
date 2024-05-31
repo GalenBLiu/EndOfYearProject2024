@@ -49,12 +49,8 @@ def current_weather():
 
     r = requests.get(forecast_url)
     forecast = r.json()
-
-    date = datetime.now()
-    hour = date.hour
-
     
-    avg_24 = (forecast['properties']['periods'][0]['temperature'] + forecast['properties']['periods'][hour]['temperature'])/2
+    avg_24 = (forecast['properties']['periods'][0]['temperature'] + forecast['properties']['periods'][2]['temperature'])/2
     s = ''
     if (avg_24 < 0):
         s = 'Snow day!'

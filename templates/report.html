@@ -19,8 +19,9 @@
             background-color: white;
             padding: 20px;
             border-radius: 20px;
+            
         }
-        input[type="submit"], input[type="button"] {
+        input[type="submit"], input[type="button"], a.email-button {
             margin-top: 0px;
             padding: 10px 20px;
             background-color: green;
@@ -28,9 +29,10 @@
             border: black;
             border-radius: 5px;
             cursor: pointer;
+            text-decoration: none;
         }
         input[type="submit"]:hover, input[type="button"]:hover {
-            background-color: white;
+            background-color: blue;
         }
         #result {
             margin-top: 20px;
@@ -41,32 +43,19 @@
 <body>
     <div class="container">
         <h1>Please let us know if there was a snow day today!</h1>
-        <h1>This is to help our future predictions!</h1> 
+        <h3>This is to help our future predictions!</h3> 
         <div class="box-one">
-            <h1>Confirm</h1>
-            <input type="button" id="snowDayConfirmed" value="Confirm Snow Day">
-            <h1>No snow day</h1>
-            <input type="button" id="snowDayConfirmed" value="No Snow Day">
-        </div>
+            <a href="mailto:galliu25@bergen.org?subject=Snow Day Today!&body=Snow Day Today!" class="email-button">Snow Day Today</a>
+            <a href="mailto:galliu25@bergen.org?subject=NO Snow Day Today!&body=NO Snow Day Today!" class="email-button">No Snow Day</a>
+            <h1>Return to main page</h1>
+            <a href="/">
+                <input type="button" id="back" value="Back">
+            </a>        
+            </div>
         <p></p>
     </div>
 
     <script>
-        $(document).ready(function() {
-            $('#calculateBtn').on('click', function() {
-                $.ajax({
-                    url: '/current_weather',
-                    method: 'GET',
-                    success: function(response) {
-                        var resultText = 'Forecasted Temperature: ' + response.tavg + '°C<br>' + response.snow_day;
-                        $('#result').html(resultText);
-                    },
-                    error: function(error) {
-                        $('#result').text('An error occurred. Please restart the page.');
-                    }
-                });
-            });
-        });
     </script>
 </body>
 </html>
