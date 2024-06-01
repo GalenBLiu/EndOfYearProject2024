@@ -15,9 +15,9 @@ cenpark = 'GHCND:USW00094728'
 tenafly = 'GHCND:US1NJBG0003'
 palpark = 'GHCND:US1NJBG0018'
 
-start_date = '2020-01-01'
+start_date = '2018-01-01'
 start_dt = pd.to_datetime(start_date, format='ISO8601')
-end_date = '2020-12-31'
+end_date = '2018-12-31'
 end_dt = pd.to_datetime(end_date, format='ISO8601')
 
 maywood_snow = get_historical_data(maywood, start_date, end_date, 'SNOW')
