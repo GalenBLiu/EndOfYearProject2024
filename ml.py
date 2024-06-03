@@ -19,7 +19,7 @@ from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassif
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 
-data = pd.read_csv('delays.csv', index_col=0)
+data = pd.read_csv('delays copy.csv', index_col=0)
 print(data.head())
 print(data.groupby('Snow Day').count())
 print(data.isnull().sum())
