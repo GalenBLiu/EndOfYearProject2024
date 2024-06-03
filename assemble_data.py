@@ -14,10 +14,13 @@ wridge = 'GHCND:US1NJBG0064'
 cenpark = 'GHCND:USW00094728'
 tenafly = 'GHCND:US1NJBG0003'
 palpark = 'GHCND:US1NJBG0018'
+teterboro = 'GHCND:USW00094741 '
+fairlawn = 'GHCND:US1NJBG0056'
+glenrock = 'GHCND:US1NJBG0017'
 
-start_date = '2019-01-01'
+start_date = '2024-01-01'
 start_dt = pd.to_datetime(start_date, format='ISO8601')
-end_date = '2019-12-31'
+end_date = '2024-06-03'
 end_dt = pd.to_datetime(end_date, format='ISO8601')
 
 maywood_snow = get_historical_data(maywood, start_date, end_date, 'SNOW')
@@ -27,6 +30,9 @@ tenafly_snow = get_historical_data(tenafly, start_date, end_date, 'SNOW')
 cenpark_snow = get_historical_data(cenpark, start_date, end_date, 'SNOW')
 cenpark_tmin = get_historical_data(cenpark, start_date, end_date, 'TMIN')
 cenpark_tmax = get_historical_data(cenpark, start_date, end_date, 'TMAX')
+teterboro_snow = get_historical_data(teterboro, start_date, end_date, 'SNOW')
+fairlawn_snow = get_historical_data(fairlawn, start_date, end_date, 'SNOW')
+glenrock_snow = get_historical_data(glenrock, start_date, end_date, 'SNOW')
 
 if maywood_snow:
     maywood_snow_dates = [record['date'] for record in maywood_snow['results']]
@@ -42,6 +48,12 @@ if cenpark_tmin:
     cenpark_tmin_dates = [record['date'] for record in cenpark_tmin['results']]
 if cenpark_tmax:
     cenpark_tmax_dates = [record['date'] for record in cenpark_tmax['results']]
+if teterboro_snow:
+    teterboro_snow_dates = [record['date'] for record in teterboro_snow['results']]
+if fairlawn_snow:
+    fairlawn_snow_dates = [record['date'] for record in fairlawn_snow['results']]
+if glenrock_snow:
+    glenrock_snow_dates = [record['date'] for record in glenrock_snow['results']]
 
 def check_weekend(date):
     if date.dayofweek > 4:
@@ -78,23 +90,43 @@ for date in dates:
     else:
         cancelled.append(0)
 
+    snows = []
+
     try:
-        snow.append(maywood_snow['results'][maywood_snow_dates.index(datestr)]['value'])
+        snows.append(maywood_snow['results'][maywood_snow_dates.index(datestr)]['value'])
     except Exception:
-        try:
-            snow.append(palpark_snow['results'][palpark_snow_dates.index(datestr)]['value'])
-        except Exception:
-            try:
-                snow.append(tenafly_snow['results'][tenafly_snow_dates.index(datestr)]['value'])
-            except Exception:
-                try:
-                    snow.append(wridge_snow['results'][wridge_snow_dates.index(datestr)]['value'])
-                except Exception:
-                    try:
-                        snow.append(cenpark_snow['results'][cenpark_snow_dates.index(datestr)]['value'])
-                    except Exception:
-                        snow.append(float('nan'))
-        
+        snows.append(0)
+    try:
+        snows.append(palpark_snow['results'][palpark_snow_dates.index(datestr)]['value'])
+    except Exception:
+        snows.append(0)
+    try:
+        snows.append(tenafly_snow['results'][tenafly_snow_dates.index(datestr)]['value'])
+    except Exception:
+        snows.append(0)
+    try:
+        snows.append(wridge_snow['results'][wridge_snow_dates.index(datestr)]['value'])
+    except Exception:
+        snows.append(0)
+    try:
+        snows.append(cenpark_snow['results'][cenpark_snow_dates.index(datestr)]['value'])
+    except Exception:
+        snows.append(0)
+    try:
+        snows.append(teterboro_snow['results'][teterboro_snow_dates.index(datestr)]['value'])
+    except Exception:
+        snows.append(0)
+    try:
+        snows.append(fairlawn_snow['results'][fairlawn_snow_dates.index(datestr)]['value'])
+    except Exception:
+        snows.append(0)
+    try:
+        snows.append(glenrock_snow['results'][glenrock_snow_dates.index(datestr)]['value'])
+    except Exception:
+        snows.append(0)
+
+    snow.append(max(snows))
+
     try:
         tmin.append(cenpark_tmin['results'][cenpark_tmin_dates.index(datestr)]['value'])
     except ValueError:
@@ -107,10 +139,10 @@ for date in dates:
 
     tavg.append(get_tavg(pd.to_datetime(date, format='%Y-%m-%d')))
 
-print(snow)
-print(tmin)
-print(tmax)
-print(tavg)
+print(len(snow))
+print(len(tmin))
+print(len(tmax))
+print(len(tavg))
 
 data = {'Date': dates, 'Snow': snow, 'Tmin': tmin, 'Tmax': tmax, 'Tavg': tavg, 'Snow Day':cancelled}
 df = pd.DataFrame(data)
