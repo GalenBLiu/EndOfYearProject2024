@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from clib import get_historical_data
 from meteostat import Point, Daily, Stations
+import time
 
 #priority for snow:
 #maywood --> tenafly --> wridge --> cenpark
@@ -27,10 +28,12 @@ maywood_snow = get_historical_data(maywood, start_date, end_date, 'SNOW')
 palpark_snow = get_historical_data(palpark, start_date, end_date, 'SNOW')
 wridge_snow = get_historical_data(wridge, start_date, end_date, 'SNOW')
 tenafly_snow = get_historical_data(tenafly, start_date, end_date, 'SNOW')
+time.sleep(1)
 cenpark_snow = get_historical_data(cenpark, start_date, end_date, 'SNOW')
 cenpark_tmin = get_historical_data(cenpark, start_date, end_date, 'TMIN')
 cenpark_tmax = get_historical_data(cenpark, start_date, end_date, 'TMAX')
 teterboro_snow = get_historical_data(teterboro, start_date, end_date, 'SNOW')
+time.sleep(1)
 fairlawn_snow = get_historical_data(fairlawn, start_date, end_date, 'SNOW')
 glenrock_snow = get_historical_data(glenrock, start_date, end_date, 'SNOW')
 

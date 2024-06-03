@@ -19,7 +19,7 @@ from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassif
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 
-data = pd.read_csv('delays copy.csv', index_col=0)
+data = pd.read_csv('master_set.csv', index_col=0)
 print(data.head())
 print(data.groupby('Snow Day').count())
 print(data.isnull().sum())
@@ -126,6 +126,8 @@ fig,ax = plt.subplots(1,2,figsize=(20,5))
 sns.barplot(x = df_result_train.index,y = df_result_train.Score,ax = ax[0])
 sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[1])
 ax[0].set_xticklabels(df_result_train.index,rotation = 30)
+ax[0].set_ylim(0.96, 1)
+ax[1].set_ylim(0.96, 1)
 ax[1].set_xticklabels(df_result_test.index,rotation = 30)
 plt.show()
 
