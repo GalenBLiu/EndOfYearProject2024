@@ -33,6 +33,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
  
 print("X_train shape:",X_train.shape)
 print("X_test shape:",X_test.shape)
+print(type(X_test))
+print(X_test)
 print("y_train shape:",y_train.shape)
 print("y_test shape:",y_test.shape)
 
@@ -119,7 +121,7 @@ df_result_train = pd.DataFrame.from_dict(result_dict_train,orient = "index", col
 df_result_test = pd.DataFrame.from_dict(result_dict_test,orient = "index", columns=["Score"])
 
 import seaborn as sns
- 
+
 fig,ax = plt.subplots(1,2,figsize=(20,5))
 sns.barplot(x = df_result_train.index,y = df_result_train.Score,ax = ax[0])
 sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[1])

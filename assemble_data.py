@@ -15,9 +15,9 @@ cenpark = 'GHCND:USW00094728'
 tenafly = 'GHCND:US1NJBG0003'
 palpark = 'GHCND:US1NJBG0018'
 
-start_date = '2018-01-01'
+start_date = '2019-01-01'
 start_dt = pd.to_datetime(start_date, format='ISO8601')
-end_date = '2018-12-31'
+end_date = '2019-12-31'
 end_dt = pd.to_datetime(end_date, format='ISO8601')
 
 maywood_snow = get_historical_data(maywood, start_date, end_date, 'SNOW')
@@ -43,10 +43,20 @@ if cenpark_tmin:
 if cenpark_tmax:
     cenpark_tmax_dates = [record['date'] for record in cenpark_tmax['results']]
 
-dates = []
+def check_weekend(date):
+    if date.dayofweek > 4:
+        return True
+
+dates_weekends = []
+
 for date in pd.date_range(start=start_dt, end=end_dt, freq='D'):
-    date_string = date.strftime('%Y-%m-%d')
-    dates.append(date_string)
+    dates_weekends.append(date)
+
+dates = []
+for date in dates_weekends:
+    if not check_weekend(date):
+        date_string = date.strftime('%Y-%m-%d') 
+        dates.append(date_string)
 
 def get_tavg(ts):
     start = end = ts
