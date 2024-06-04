@@ -11,6 +11,9 @@ def index():
 @app.route('/report')
 def report():
     return render_template('report.html')
+@app.route('/history')
+def history():
+    return render_template('history.html')
 
 @app.route('/get_temperature', methods=['POST'])
 def get_temperature():
@@ -19,13 +22,11 @@ def get_temperature():
     month = int(data['month'])
     day = int(data['day'])
     
-    # Define the location (example: San Francisco)
     ts = datetime(year, month, day)
     start = end = ts
     academies = Point(40.90243696271137, -74.0344921768194)
     data = Daily(academies, start, end)
 
-    #Fetch data in pd Dataframe
     data = data.fetch()
     avg_temp = data.at[ts, 'tavg']
     s = ''
@@ -60,3 +61,9 @@ def current_weather():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/historical_prediction', methods=['GET'])
+def historical_prediction():
+    base_url = "https://www.ncei.noaa.gov/cdo-web/api/v2/locations?locationcategoryid=ST&limit=52"
+
+    response = requests.get(base_url)

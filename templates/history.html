@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Average Temperature Finder</title>
+    <style>
+        body {
+            background-color: #add8e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+        }
+        .container {
+            text-align: center;
+        }
+        .box-one{
+            background-color: white;
+            padding: 20px;
+            border-radius: 20px;
+        }
+        input[type="submit"], input[type="button"] {
+            margin-top: 0px;
+            padding: 10px 20px;
+            background-color: green;
+            color: white;
+            border: black;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover, input[type="button"]:hover {
+            background-color: blue;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class ="container">
+        <h1>Historical BCA Snow Day Calculator</h1> 
+        <div class="box-one">
+            <h1>Cacluate the chance of a snow day on a random day in the past!</h1>
+            <h3>Date for Calculation?</h3>
+            <small>Day </small><input type="int">
+            <small>Month </small><input type="int">
+            <small>Year </small><input type="int">
+            <input type="button" id="historicalBtn" value="Calculate!">
+            <p id="result"></p>
+        </div>
+    </div>
+    <script>
+$(document).ready(function() {
+            $('#historicalBtn').on('click', function() {
+
+            });
+            });
+    </script>
+</body>
+</html>
