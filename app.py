@@ -62,8 +62,5 @@ def current_weather():
 if __name__ == '__main__':
     app.run(debug=True)
 
-@app.route('/historical_prediction', methods=['GET'])
-def historical_prediction():
-    base_url = "https://www.ncei.noaa.gov/cdo-web/api/v2/locations?locationcategoryid=ST&limit=52"
-
-    response = requests.get(base_url)
+# @app.route('/historical_prediction', methods=['GET'])
+# def historical_prediction():

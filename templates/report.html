@@ -5,33 +5,45 @@
     <title>Average Temperature Finder</title>
     <style>
         body {
-            background-color: white;
+            background-color: #add8e6;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: Courier, monospace;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
         }
         .container {
             text-align: center;
-        }
-        .box-one, .box-two {
             background-color: white;
+            padding: 20px;
+            border-radius: 20px;
+        }
+        .box-one{
             padding: 20px;
             border-radius: 20px;
             
         }
-        input[type="submit"], input[type="button"], a.email-button {
+        input[type="submit"], input[type="button"], a.email-button{
             margin-top: 0px;
             padding: 10px 20px;
-            background-color: green;
+            background-color: lightblue;
             color: white;
             border: black;
             border-radius: 5px;
             cursor: pointer;
             text-decoration: none;
         }
-        input[type="submit"]:hover, input[type="button"]:hover {
+        input[type="submit"], input[type="button"]{
+            margin-top: 0px;
+            padding: 10px 20px;
+            background-color: lightblue;
+            color: white;
+            border: black;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        input[type="button"]:hover, a.email-button:hover {
             background-color: blue;
         }
         #result {
@@ -47,11 +59,12 @@
         <div class="box-one">
             <a href="mailto:galliu25@bergen.org?subject=Snow Day Today!&body=Snow Day Today!" class="email-button">Snow Day Today</a>
             <a href="mailto:galliu25@bergen.org?subject=NO Snow Day Today!&body=NO Snow Day Today!" class="email-button">No Snow Day</a>
-            <h1>Return to main page</h1>
-            <a href="/">
-                <input type="button" id="back" value="Back">
-            </a>        
-            </div>
+        </div>
+    
+        <h1>Return to main page</h1>
+        <a href="/">
+            <input type="button" id="back" value="Back">
+        </a>        
         <p></p>
     </div>
 
