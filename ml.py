@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
+import pickle 
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.experimental import enable_iterative_imputer
@@ -27,7 +28,7 @@ print(data.isnull().sum())
 X = data.drop(['Snow Day', 'Date'], axis=1)
 y = data['Snow Day']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0, shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0, shuffle=True)
 # y_train = y_train.values.reshape(-1,1)
 # y_test = y_test.values.reshape(-1,1)
  
@@ -49,6 +50,9 @@ accuracies = cross_val_score(reg, X_train, y_train, cv=5)
 reg.fit(X_train,y_train)
 y_pred = reg.predict(X_test)
  
+print(y_test.to_numpy())
+print(y_pred)
+
 print("LR Train Score:",np.mean(accuracies))
 print("Test Score:",reg.score(X_test,y_test))
 
@@ -59,6 +63,9 @@ knn = KNeighborsClassifier()
 accuracies = cross_val_score(knn, X_train, y_train, cv=5)
 knn.fit(X_train,y_train)
 y_pred = knn.predict(X_test)
+
+print(y_test.to_numpy())
+print(y_pred)
 
 print("KNN Train Score:",np.mean(accuracies))
 print("Test Score:",knn.score(X_test,y_test))
@@ -71,6 +78,9 @@ accuracies = cross_val_score(svc, X_train, y_train, cv=5)
 svc.fit(X_train,y_train)
 y_pred = svc.predict(X_test)
  
+print(y_test.to_numpy())
+print(y_pred)
+
 print("SVC Train Score:",np.mean(accuracies))
 print("Test Score:",svc.score(X_test,y_test))
 
@@ -130,7 +140,7 @@ ax[1].set_ylim(0.96, 1)
 ax[1].set_xticklabels(df_result_test.index,rotation = 30)
 plt.show()
 
-predict_data = np.array([90, 29, 30, 29])
+predict_data = np.array([0, -0.7, 11, 3])
 predict_data = np.array(sc.transform(predict_data.reshape(1,-1)))
-print(reg.predict(predict_data))
+print(dtc.predict(predict_data))
 
