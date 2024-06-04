@@ -19,7 +19,7 @@ from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassif
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 
-data = pd.read_csv('delays.csv', index_col=0)
+data = pd.read_csv('InflatedSnow.csv', index_col=0)
 print(data.head())
 print(data.groupby('Snow Day').count())
 print(data.isnull().sum())
@@ -33,7 +33,6 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
  
 print("X_train shape:",X_train.shape)
 print("X_test shape:",X_test.shape)
-print(type(X_test))
 print(X_test)
 print("y_train shape:",y_train.shape)
 print("y_test shape:",y_test.shape)
@@ -43,7 +42,7 @@ result_dict_test = {}
 
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
-X_test = sc.fit_transform(X_test)
+X_test = sc.transform(X_test)
 
 reg = LogisticRegression(random_state = 42)
 accuracies = cross_val_score(reg, X_train, y_train, cv=5)
@@ -131,4 +130,7 @@ ax[1].set_ylim(0.96, 1)
 ax[1].set_xticklabels(df_result_test.index,rotation = 30)
 plt.show()
 
+predict_data = np.array([90, 29, 30, 29])
+predict_data = np.array(sc.transform(predict_data.reshape(1,-1)))
+print(reg.predict(predict_data))
 
