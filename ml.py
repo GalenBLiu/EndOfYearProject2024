@@ -20,7 +20,7 @@ from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassif
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 
-data = pd.read_csv('InflatedSnow.csv', index_col=0)
+data = pd.read_csv('master_set.csv', index_col=0)
 print(data.head())
 print(data.groupby('Snow Day').count())
 print(data.isnull().sum())
@@ -28,7 +28,7 @@ print(data.isnull().sum())
 X = data.drop(['Snow Day', 'Date'], axis=1)
 y = data['Snow Day']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0, shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=0, shuffle=True)
 # y_train = y_train.values.reshape(-1,1)
 # y_test = y_test.values.reshape(-1,1)
  
@@ -44,6 +44,8 @@ result_dict_test = {}
 sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
+
+pickle.dump(sc, open('StandardScaler.pkl', 'wb'))
 
 reg = LogisticRegression(random_state = 42)
 accuracies = cross_val_score(reg, X_train, y_train, cv=5)
@@ -97,6 +99,9 @@ print(y_pred)
 
 print("DTC Train Score:",np.mean(accuracies))
 print("Test Score:",dtc.score(X_test,y_test))
+
+filename = 'dtc_model.sav'
+pickle.dump(dtc, open(filename, 'wb'))
 
 result_dict_train["Decision Tree Train Score"] = np.mean(accuracies)
 result_dict_test["Decision Tree Test Score"] = dtc.score(X_test,y_test)
