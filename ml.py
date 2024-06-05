@@ -61,6 +61,9 @@ print("Test Score:",reg.score(X_test,y_test))
 result_dict_train["Logistic Train Score"] = np.mean(accuracies)
 result_dict_test["Logistic Test Score"] = reg.score(X_test,y_test)
 
+# filename = 'lr_model.sav'
+# pickle.dump(reg, open(filename, 'wb'))
+
 knn = KNeighborsClassifier()
 accuracies = cross_val_score(knn, X_train, y_train, cv=5)
 knn.fit(X_train,y_train)
@@ -89,7 +92,7 @@ print("Test Score:",svc.score(X_test,y_test))
 result_dict_train["SVM Train Score"] = np.mean(accuracies)
 result_dict_test["SVM Test Score"] = svc.score(X_test,y_test)
 
-dtc = DecisionTreeClassifier(random_state = 42)
+dtc = DecisionTreeClassifier(random_state = 42, min_samples_leaf=10, max_depth=7)
 accuracies = cross_val_score(dtc, X_train, y_train, cv=5)
 dtc.fit(X_train,y_train)
 y_pred = dtc.predict(X_test)
@@ -100,8 +103,8 @@ print(y_pred)
 print("DTC Train Score:",np.mean(accuracies))
 print("Test Score:",dtc.score(X_test,y_test))
 
-filename = 'dtc_model.sav'
-pickle.dump(dtc, open(filename, 'wb'))
+# filename = 'dtc_model.sav'
+# pickle.dump(dtc, open(filename, 'wb'))
 
 result_dict_train["Decision Tree Train Score"] = np.mean(accuracies)
 result_dict_test["Decision Tree Test Score"] = dtc.score(X_test,y_test)
@@ -119,6 +122,9 @@ print("Test Score:",rfc.score(X_test,y_test))
 
 result_dict_train["Random Forest Train Score"] = np.mean(accuracies)
 result_dict_test["Random Forest Test Score"] = rfc.score(X_test,y_test)
+
+filename = 'rfc_model.sav'
+pickle.dump(rfc, open(filename, 'wb'))
 
 gnb = GaussianNB()
 accuracies = cross_val_score(gnb, X_train, y_train, cv=5)
