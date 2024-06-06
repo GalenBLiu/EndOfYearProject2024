@@ -43,29 +43,36 @@ def get_temperature():
 
 @app.route('/current_weather', methods=['GET'])
 def current_weather():
-
     s, tmin, tmax = get_params()
     tavg = get_tavg(pd.to_datetime('today').normalize())
     print(s, tmin, tmax, tavg)
 
     sc = pickle.load(open('StandardScaler-distance-holidays.pkl', 'rb'))
-    # predict_data = np.array([s[0], tmin[0], tmax[0], tavg])
-    predict_data = np.array([0, -12, -2, -10])
+    predict_data = np.array([s[0], tmin[0], tmax[0], tavg])
     predict_data = np.array(sc.transform(predict_data.reshape(1,-1)))
 
     dtc = pickle.load(open('lr_model_distance_holidays.sav', 'rb'))
-    prob = dtc.predict_proba(predict_data)
+    prob = dtc.predict_proba(predict_data)[0]
     out = dtc.predict(predict_data)
-    
+    a = 0
+    b = 0
+    c = 0
+    d = 0
+    a = round(prob[1]*100, 1)
+    b = round(prob[0]*100,1)
+    c = round(prob[2]*100,1)
+    d = round(prob[3]*100,1)
+
     if (out == 1):
         s = 'Snow day!'
     elif (out == 0):
         s = 'No snow day :('
     elif (out == 2):
-        s = 'Delay'
+        s = 'Delay!'
     elif (out == 3):
-        s = 'Half day'
-    return jsonify({'prob' : prob, 'snow_day' : s})
+        s = 'Half day!'
+
+    return jsonify({'probSchool' : b, 'probClose':a, 'probDelay':c, 'probHalf':d, 'snow_day' : s})
 
 if __name__ == '__main__':
     app.run(debug=True)
