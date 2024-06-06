@@ -2,12 +2,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 import pickle 
 import pandas as pd
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.experimental import enable_iterative_imputer
-from sklearn.impute import IterativeImputer
-from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import GridSearchCV
@@ -19,8 +14,9 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
+from xgboost import XGBClassifier
 
-data = pd.read_csv('master_set.csv', index_col=0)
+data = pd.read_csv('master_set_holidays.csv', index_col=0)
 print(data.head())
 print(data.groupby('Snow Day').count())
 print(data.isnull().sum())
@@ -28,13 +24,13 @@ print(data.isnull().sum())
 X = data.drop(['Snow Day', 'Date'], axis=1)
 y = data['Snow Day']
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=0, shuffle=True)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0, shuffle=True)
+www = (X_train.iloc[0].to_numpy())
 # y_train = y_train.values.reshape(-1,1)
 # y_test = y_test.values.reshape(-1,1)
  
 print("X_train shape:",X_train.shape)
 print("X_test shape:",X_test.shape)
-print(X_test)
 print("y_train shape:",y_train.shape)
 print("y_test shape:",y_test.shape)
 
@@ -45,7 +41,7 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
-pickle.dump(sc, open('StandardScaler.pkl', 'wb'))
+# pickle.dump(sc, open('StandardScaler.pkl', 'wb'))
 
 reg = LogisticRegression(random_state = 42)
 accuracies = cross_val_score(reg, X_train, y_train, cv=5)
@@ -64,35 +60,21 @@ result_dict_test["Logistic Test Score"] = reg.score(X_test,y_test)
 # filename = 'lr_model.sav'
 # pickle.dump(reg, open(filename, 'wb'))
 
-knn = KNeighborsClassifier()
-accuracies = cross_val_score(knn, X_train, y_train, cv=5)
-knn.fit(X_train,y_train)
-y_pred = knn.predict(X_test)
-
-print(y_test.to_numpy())
-print(y_pred)
-
-print("KNN Train Score:",np.mean(accuracies))
-print("Test Score:",knn.score(X_test,y_test))
-
-result_dict_train["KNN Train Score"] = np.mean(accuracies)
-result_dict_test["KNN Test Score"] = knn.score(X_test,y_test)
-
-svc = SVC(random_state = 42)
-accuracies = cross_val_score(svc, X_train, y_train, cv=5)
-svc.fit(X_train,y_train)
-y_pred = svc.predict(X_test)
+xgb = XGBClassifier()
+accuracies = cross_val_score(xgb, X_train, y_train, cv=5)
+xgb.fit(X_train,y_train)
+y_pred = xgb.predict(X_test)
  
 print(y_test.to_numpy())
 print(y_pred)
 
-print("SVC Train Score:",np.mean(accuracies))
-print("Test Score:",svc.score(X_test,y_test))
+print("XGB Train Score:",np.mean(accuracies))
+print("Test Score:",reg.score(X_test,y_test))
 
-result_dict_train["SVM Train Score"] = np.mean(accuracies)
-result_dict_test["SVM Test Score"] = svc.score(X_test,y_test)
+result_dict_train["XGB Train Score"] = np.mean(accuracies)
+result_dict_test["XGB Test Score"] = reg.score(X_test,y_test)
 
-dtc = DecisionTreeClassifier(random_state = 42, min_samples_leaf=10, max_depth=7)
+dtc = DecisionTreeClassifier(random_state = 42)
 accuracies = cross_val_score(dtc, X_train, y_train, cv=5)
 dtc.fit(X_train,y_train)
 y_pred = dtc.predict(X_test)
@@ -123,35 +105,22 @@ print("Test Score:",rfc.score(X_test,y_test))
 result_dict_train["Random Forest Train Score"] = np.mean(accuracies)
 result_dict_test["Random Forest Test Score"] = rfc.score(X_test,y_test)
 
-filename = 'rfc_model.sav'
-pickle.dump(rfc, open(filename, 'wb'))
-
-gnb = GaussianNB()
-accuracies = cross_val_score(gnb, X_train, y_train, cv=5)
-gnb.fit(X_train,y_train)
-y_pred = gnb.predict(X_test)
-
-print("GNB Train Score:",np.mean(accuracies))
-print("Test Score:",gnb.score(X_test,y_test))
-
-result_dict_train["Gaussian NB Train Score"] = np.mean(accuracies)
-result_dict_test["Gaussian NB Test Score"] = gnb.score(X_test,y_test)
-
-df_result_train = pd.DataFrame.from_dict(result_dict_train,orient = "index", columns=["Score"])
-df_result_test = pd.DataFrame.from_dict(result_dict_test,orient = "index", columns=["Score"])
+# filename = 'rfc_model.sav'
+# pickle.dump(rfc, open(filename, 'wb'))
 
 import seaborn as sns
 
-fig,ax = plt.subplots(1,2,figsize=(20,5))
-sns.barplot(x = df_result_train.index,y = df_result_train.Score,ax = ax[0])
-sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[1])
-ax[0].set_xticklabels(df_result_train.index,rotation = 30)
-ax[0].set_ylim(0.96, 1)
-ax[1].set_ylim(0.96, 1)
-ax[1].set_xticklabels(df_result_test.index,rotation = 30)
-plt.show()
+# fig,ax = plt.subplots(1,2,figsize=(20,5))
+# sns.barplot(x = df_result_train.index,y = df_result_train.Score,ax = ax[0])
+# sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[1])
+# ax[0].set_xticklabels(df_result_train.index,rotation = 30)
+# ax[0].set_ylim(0.96, 1)
+# ax[1].set_ylim(0.96, 1)
+# ax[1].set_xticklabels(df_result_test.index,rotation = 30)
+# plt.show()
 
-predict_data = np.array([0, -0.7, 11, 3])
-predict_data = np.array(sc.transform(predict_data.reshape(1,-1)))
-print(dtc.predict(predict_data))
+predict_data = np.array([290, -12, -1, -8]).reshape(1,-1)
+predict_data = sc.transform(predict_data)
+print(reg.predict_proba(predict_data))
+print(reg.predict(predict_data))
 
