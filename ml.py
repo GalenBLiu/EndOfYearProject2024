@@ -116,6 +116,7 @@ import seaborn as sns
 
 predict_data = np.array([200, -12, -1, -8]).reshape(1,-1)
 predict_data = sc.transform(predict_data)
-print(reg.predict_proba(predict_data))
-print(reg.predict(predict_data))
+currModel = reg #Model switcher
+print(currModel.predict_proba(predict_data))
+print(currModel.predict(predict_data))
 
