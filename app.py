@@ -2,6 +2,10 @@ from flask import Flask, request, render_template, jsonify
 from datetime import datetime
 from meteostat import Point, Daily
 import requests
+from clib import get_params, get_tavg
+import pickle
+import numpy as np
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -39,25 +43,29 @@ def get_temperature():
 
 @app.route('/current_weather', methods=['GET'])
 def current_weather():
-    base_url = "https://api.weather.gov/points/40.90243696271137,-74.0344921768194"
 
-    response = requests.get(base_url)
+    s, tmin, tmax = get_params()
+    tavg = get_tavg(pd.to_datetime('today').normalize())
+    print(s, tmin, tmax, tavg)
 
-    x = response.json()
+    sc = pickle.load(open('StandardScaler-distance-holidays.pkl', 'rb'))
+    # predict_data = np.array([s[0], tmin[0], tmax[0], tavg])
+    predict_data = np.array([0, -12, -2, -10])
+    predict_data = np.array(sc.transform(predict_data.reshape(1,-1)))
 
-    forecast_url = x['properties']['forecast']
-    print(forecast_url)
-
-    r = requests.get(forecast_url)
-    forecast = r.json()
+    dtc = pickle.load(open('lr_model_distance_holidays.sav', 'rb'))
+    prob = dtc.predict_proba(predict_data)
+    out = dtc.predict(predict_data)
     
-    avg_24 = (forecast['properties']['periods'][0]['temperature'] + forecast['properties']['periods'][2]['temperature'])/2
-    s = ''
-    if (avg_24 < 0):
+    if (out == 1):
         s = 'Snow day!'
-    else:
+    elif (out == 0):
         s = 'No snow day :('
-    return jsonify({'tavg' : avg_24, 'snow_day' : s})
+    elif (out == 2):
+        s = 'Delay'
+    elif (out == 3):
+        s = 'Half day'
+    return jsonify({'prob' : prob, 'snow_day' : s})
 
 if __name__ == '__main__':
     app.run(debug=True)

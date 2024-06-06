@@ -5,18 +5,13 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import cross_val_score
-from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.metrics import accuracy_score
 from xgboost import XGBClassifier
 
-data = pd.read_csv('master_set_holidays.csv', index_col=0)
+data = pd.read_csv('2018-01-01-2024-06-03-distance-holidays.csv', index_col=0)
 print(data.head())
 print(data.groupby('Snow Day').count())
 print(data.isnull().sum())
@@ -41,7 +36,7 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
-# pickle.dump(sc, open('StandardScaler.pkl', 'wb'))
+# pickle.dump(sc, open('StandardScaler-distance-holidays.pkl', 'wb'))
 
 reg = LogisticRegression(random_state = 42)
 accuracies = cross_val_score(reg, X_train, y_train, cv=5)
@@ -57,7 +52,7 @@ print("Test Score:",reg.score(X_test,y_test))
 result_dict_train["Logistic Train Score"] = np.mean(accuracies)
 result_dict_test["Logistic Test Score"] = reg.score(X_test,y_test)
 
-# filename = 'lr_model.sav'
+# filename = 'lr_model_distance_holidays.sav'
 # pickle.dump(reg, open(filename, 'wb'))
 
 xgb = XGBClassifier()
@@ -119,7 +114,7 @@ import seaborn as sns
 # ax[1].set_xticklabels(df_result_test.index,rotation = 30)
 # plt.show()
 
-predict_data = np.array([290, -12, -1, -8]).reshape(1,-1)
+predict_data = np.array([200, -12, -1, -8]).reshape(1,-1)
 predict_data = sc.transform(predict_data)
 print(reg.predict_proba(predict_data))
 print(reg.predict(predict_data))
