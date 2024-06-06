@@ -18,6 +18,9 @@ def report():
 @app.route('/history')
 def history():
     return render_template('history.html')
+@app.route('/forecast')
+def forecast():
+    return render_template('forecast.html')
 
 @app.route('/get_temperature', methods=['POST'])
 def get_temperature():
@@ -40,6 +43,22 @@ def get_temperature():
         s = 'No snow day :('
 
     return jsonify({'tavg' : avg_temp, 'snow_day' : s})
+
+@app.route('/get_forecast', methods=['GET'])
+def get_12h():
+    base_url = "https://api.weather.gov/points/40.90243696271137,-74.0344921768194"
+    response = requests.get(base_url)
+    x = response.json()
+    forecast_url = x['properties']['forecast']
+    print(forecast_url)
+    r = requests.get(forecast_url)
+    forecast = r.json()
+    tavg = forecast['properties']['periods'][0]['temperature']
+    img_url = forecast['properties']['periods'][0]['icon']
+    detailed_forecast = forecast['properties']['periods'][0]['detailedForecast']
+    print(detailed_forecast)
+    return jsonify({'tavg' : tavg, 'img_url': img_url, 'description': detailed_forecast})
+
 
 @app.route('/current_weather', methods=['GET'])
 def current_weather():

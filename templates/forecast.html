@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Forecast</title>
+    <style>
+        body {
+            background-color: #add8e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+        }
+        .container {
+            text-align: center;
+        }
+        .box-one {
+            background-color: white;
+            padding: 20px;
+            border-radius: 20px;
+        }
+        input[type="submit"], input[type="button"] {
+            margin-top: 0px;
+            padding: 10px 20px;
+            background-color: skyblue;
+            color: white;
+            border: black;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover, input[type="button"]:hover {
+            background-color: blue;
+        }
+        #result {
+            margin-top: 20px;
+        }
+        #forecastImage {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+            display: none;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <img src="https://github.com/GalenBLiu/EndOfYearProject2024/blob/main/BCA%20Snow%20Day%20Calculator_transparent.png?raw=true" alt="image" style="width: 300px; height: 300px;">  
+        <div class="box-one">
+            <h1>12 hour forecast</h1>
+            <input type="button" id="calculateBtn" value="Get Forecast">
+            <p id="result"></p>
+            <img id="forecastImage" alt="Forecast Image">
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#calculateBtn').on('click', function() {
+                $.ajax({
+                    url: '/get_forecast',
+                    method: 'GET',
+                    success: function(response) {
+                        console.log('Response:', response);
+                        var resultText = 'Average Temperature: ' + response.tavg + '<br>' + response.description;
+                        $('#result').html(resultText);
+                        $('#forecastImage').attr('src', response.img_url).show();
+                    },
+                    error: function(error) {
+                        $('#result').text('An error occurred. Please restart the page.');
+                        $('#forecastImage').hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
