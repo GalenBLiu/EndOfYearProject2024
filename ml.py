@@ -11,7 +11,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
 from xgboost import XGBClassifier
 
-data = pd.read_csv('2018-01-01-2024-06-03-distance-holidays.csv', index_col=0)
+data = pd.read_csv('InflatedSnow.csv', index_col=0)
 print(data.head())
 print(data.groupby('Snow Day').count())
 print(data.isnull().sum())
@@ -36,7 +36,7 @@ sc = StandardScaler()
 X_train = sc.fit_transform(X_train)
 X_test = sc.transform(X_test)
 
-# pickle.dump(sc, open('StandardScaler-distance-holidays.pkl', 'wb'))
+# pickle.dump(sc, open('inflated.pkl', 'wb'))
 
 reg = LogisticRegression(random_state = 42)
 accuracies = cross_val_score(reg, X_train, y_train, cv=5)
@@ -52,7 +52,7 @@ print("Test Score:",reg.score(X_test,y_test))
 result_dict_train["Logistic Train Score"] = np.mean(accuracies)
 result_dict_test["Logistic Test Score"] = reg.score(X_test,y_test)
 
-# filename = 'lr_model_distance_holidays.sav'
+# filename = 'inflated.sav'
 # pickle.dump(reg, open(filename, 'wb'))
 
 xgb = XGBClassifier()

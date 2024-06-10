@@ -27,9 +27,9 @@ def get_historical_data(station_id, start_date, end_date, datatypeid):
         return None
 
 # Example usage
-station_id = 'GHCND:US1NJBG0003'  
-start_date = '2018-01-01'
-end_date = '2018-12-31'
+station_id = 'GHCND:US1NJBG0043'  
+start_date = '2024-02-13'
+end_date = '2024-02-13'
 datatype_id = 'SNOW'
 
 #US1NJBG0043 - Maywood ****

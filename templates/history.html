@@ -44,9 +44,9 @@
         <div class="box-one">
             <h1>Cacluate the chance of a snow day on a random day in the past!</h1>
             <h3>Date for Calculation?</h3>
-            <small>Day </small><input type="int">
-            <small>Month </small><input type="int">
-            <small>Year </small><input type="int">
+            <small>Day </small><input type="int" id="day" name="day">
+            <small>Month </small><input type="int" id="month" name="month">
+            <small>Year </small><input type="int" id="year" name="year">
             <p></p>
             <input type="button" id="historicalBtn" value="Calculate!">
             <p id="result"></p>
@@ -59,7 +59,18 @@
     <script>
 $(document).ready(function() {
             $('#historicalBtn').on('click', function() {
-
+                $.ajax({
+                    
+                    url: '/historical_weather',
+                    method: 'POST',
+                    success: function(response) {
+                        var resultText = 'Probability of School: ' + response.probSchool + '%<br>Probability of Closure: ' + response.probClose + '%<br>' + response.snow_day;
+                        $('#result').html(resultText);
+                    },
+                    error: function(error) {
+                        $('#result').text('An error occurred. Please restart the page.');
+                    }
+                });
             });
             });
     </script>
