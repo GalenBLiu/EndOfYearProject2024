@@ -35,12 +35,22 @@
         #result {
             margin-top: 20px;
         }
+        #forecastImage {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+            display: none;
+        }
+        .logo {
+            position: relative;
+            top: 40px; /* Adjust this value as needed */
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <img src="https://github.com/GalenBLiu/EndOfYearProject2024/blob/main/BCA%20Snow%20Day%20Calculator_transparent.png?raw=true" alt="image" style="width: 300px; height: 300px;">  
+        <img src="https://github.com/GalenBLiu/EndOfYearProject2024/blob/main/BCA%20Snow%20Day%20Calculator_transparent.png?raw=true" class="logo" style="width: 300px; height: 300px">  
         <div class="box-one">
             <h1>Will I have a snow day tomorrow?</h1>
             <p>Input number of snow days this year</p>
@@ -53,6 +63,15 @@
             <p></p>
             <input type="button" id="calculateBtn" value="Calculate!">
             <p id="result"></p>
+        </div>
+        <p></p>
+        <div class="box-one">
+            <h1>12 Hour Forecast</h1>
+            <input type="button" id="forecastBtn" value="Get Forecast">
+            <p></p>
+            <div id="forecastResult"></div>    
+            <p></p>        
+            <img id="forecastImage" style="display: block; margin: auto;">
         </div>
         <p></p>
         <div class="box-two">
@@ -69,14 +88,6 @@
               </a>
         </div>
         <p></p> 
-        <div class="box-four">
-            <h1>12 Hour Forecast</h1>
-            <a href="/forecast">
-                <input type="button" id="forecast" value="Forecast">
-            </a>
-        </div>
-    </div>
-
     <script>
         $(document).ready(function() {
             $('#calculateBtn').on('click', function() {
@@ -93,6 +104,25 @@
                 });
             });
             });
+
+            $(document).ready(function() {
+            $('#forecastBtn').on('click', function() {
+                $.ajax({
+                    url: '/get_forecast',
+                    method: 'GET',
+                    success: function(response) {
+                        console.log('Response:', response);
+                        var resultText = 'Average Temperature: ' + response.tavg + '<br>' + response.description;
+                        $('#forecastResult').html(resultText);
+                        $('#forecastImage').attr('src', response.img_url).show();
+                    },
+                    error: function(error) {
+                        $('#forecastResult').text('An error occurred. Please restart the page.');
+                        $('#forecastImage').hide();
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
