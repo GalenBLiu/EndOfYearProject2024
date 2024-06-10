@@ -15,7 +15,7 @@ wridge = 'GHCND:US1NJBG0064'
 cenpark = 'GHCND:USW00094728'
 tenafly = 'GHCND:US1NJBG0003'
 palpark = 'GHCND:US1NJBG0018'
-teterboro = 'GHCND:USW00094741 '
+teterboro = 'GHCND:USW00094741'
 fairlawn = 'GHCND:US1NJBG0056'
 glenrock = 'GHCND:US1NJBG0017'
 

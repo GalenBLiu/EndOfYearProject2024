@@ -7,15 +7,19 @@
         body {
             background-color: #add8e6;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: space-around;
             align-items: center;
-            height: 100vh;
-            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif
+            height: 500%;
+            padding: 0vh;
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
         }
         .container {
             text-align: center;
+            height: 100%;
+            margin-top: 0vh;
         }
-        .box-one, .box-two, .box-three{
+        .box-one, .box-two, .box-three, .box-four{
             background-color: white;
             padding: 20px;
             border-radius: 20px;
@@ -35,12 +39,22 @@
         #result {
             margin-top: 20px;
         }
+        #forecastImage {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 300px;
+            display: none;
+        }
+        .logo {
+            position: relative;
+            top: 0px; /* Adjust this value as needed */
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <img src="https://github.com/GalenBLiu/EndOfYearProject2024/blob/main/BCA%20Snow%20Day%20Calculator_transparent.png?raw=true" alt="image" style="width: 300px; height: 300px;">  
+        <img src="https://github.com/GalenBLiu/EndOfYearProject2024/blob/main/BCA%20Snow%20Day%20Calculator_transparent.png?raw=true" class="logo" style="width: 300px; height: 300px">  
         <div class="box-one">
             <h1>Will I have a snow day tomorrow?</h1>
             <p>Input number of snow days this year</p>
@@ -55,6 +69,15 @@
             <p id="result"></p>
         </div>
         <p></p>
+        <div class="box-one">
+            <h1>12 Hour Forecast</h1>
+            <input type="button" id="forecastBtn" value="Get Forecast">
+            <p></p>
+            <div id="forecastResult"></div>    
+            <p></p>        
+            <img id="forecastImage" style="display: block; margin: auto;">
+        </div>
+        <p></p>
         <div class="box-two">
             <h1>Report a snow day!</h1>
             <a href="/report">
@@ -63,13 +86,12 @@
         </div>
         <p></p> 
         <div class="box-three">
-            <h1>Historial Calculator</h1>
+            <h1>Historical Calculator</h1>
             <a href="/history">
                 <input type="button" id="historical" value="Historial Calculator">
               </a>
         </div>
-    </div>
-
+        <p></p> 
     <script>
         $(document).ready(function() {
             $('#calculateBtn').on('click', function() {
@@ -77,7 +99,7 @@
                     url: '/current_weather',
                     method: 'GET',
                     success: function(response) {
-                        var resultText = 'Forecasted Temperature: ' + response.tavg + '°F<br>' + response.snow_day;
+                        var resultText = 'Probability of School: ' + response.probSchool + '%<br>Probability of Closure: ' + response.probClose + '%<br>Probability of Delay: ' + response.probDelay + '%<br>Probability of Half Day: ' + response.probHalf + '%<br>' + response.snow_day;
                         $('#result').html(resultText);
                     },
                     error: function(error) {
@@ -86,6 +108,25 @@
                 });
             });
             });
+
+            $(document).ready(function() {
+            $('#forecastBtn').on('click', function() {
+                $.ajax({
+                    url: '/get_forecast',
+                    method: 'GET',
+                    success: function(response) {
+                        console.log('Response:', response);
+                        var resultText = 'Average Temperature: ' + response.tavg + '<br>' + response.description;
+                        $('#forecastResult').html(resultText);
+                        $('#forecastImage').attr('src', response.img_url).show();
+                    },
+                    error: function(error) {
+                        $('#forecastResult').text('An error occurred. Please restart the page.');
+                        $('#forecastImage').hide();
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
