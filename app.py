@@ -104,7 +104,8 @@ def historical_weather():
     sc = pickle.load(open('inflated.pkl', 'rb'))
     try:
         predict_data = np.array(conditions_of_day(date))
-    except:
+    except ValueError:
+        s = 'Weekend!'
         return jsonify({'probSchool' : 0, 'probClose':100, 'probDelay':0, 'probHalf':0, 'snow_day' : s})
 
     predict_data = np.array(sc.transform(predict_data.reshape(1,-1)))
@@ -114,11 +115,9 @@ def historical_weather():
     a = 0
     b = 0
     c = 0
-    d = 0
     a = round(prob[1]*100, 1)
     b = round(prob[0]*100,1)
     c = round(prob[2]*100,1)
-    d = round(prob[3]*100,1)
 
     if (out == 1):
         s = 'Snow day!'

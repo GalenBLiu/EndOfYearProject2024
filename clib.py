@@ -93,7 +93,7 @@ def conditions_of_day(s):
 
     date = pd.to_datetime(s, format='ISO8601')
     if date.dayofweek > 4:
-        raise Exception('Weekend!')
+        raise ValueError('Weekend!')
 
     maywood_snow = get_historical_data(maywood, s, s, 'SNOW')
     palpark_snow = get_historical_data(palpark, s, s, 'SNOW')
@@ -156,7 +156,7 @@ def conditions_of_day(s):
                                 snow = glenrock_snow_val
                             except Exception:
                                 try:
-                                    snow = glenrock_snow_val
+                                    snow = cenpark_snow_val
                                 except Exception:
                                     snow = 0
 
