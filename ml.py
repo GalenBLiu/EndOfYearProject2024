@@ -103,16 +103,22 @@ result_dict_test["Random Forest Test Score"] = rfc.score(X_test,y_test)
 # filename = 'rfc_model.sav'
 # pickle.dump(rfc, open(filename, 'wb'))
 
+df_result_train = pd.DataFrame.from_dict(result_dict_train,orient = "index",columns=["Score"])
+df_result_test = pd.DataFrame.from_dict(result_dict_test,orient = "index",columns=["Score"])
+
+
 import seaborn as sns
 
-# fig,ax = plt.subplots(1,2,figsize=(20,5))
-# sns.barplot(x = df_result_train.index,y = df_result_train.Score,ax = ax[0])
-# sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[1])
-# ax[0].set_xticklabels(df_result_train.index,rotation = 30)
-# ax[0].set_ylim(0.96, 1)
-# ax[1].set_ylim(0.96, 1)
-# ax[1].set_xticklabels(df_result_test.index,rotation = 30)
-# plt.show()
+fig,ax = plt.subplots(1,2,figsize=(20,4))
+fig.subplots_adjust(wspace=1)
+sns.barplot(x = df_result_train.index,y = df_result_train.Score,ax = ax[0])
+sns.barplot(x = df_result_test.index,y = df_result_test.Score,ax = ax[1])
+ax[0].set_xticklabels(df_result_train.index,rotation = 30)
+ax[0].set_ylim(0.90, 1)
+ax[1].set_ylim(0.90, 1)
+ax[1].set_xticklabels(df_result_test.index,rotation = 30)
+fig.tight_layout()
+plt.show()
 
 predict_data = np.array([200, -12, -1, -8]).reshape(1,-1)
 predict_data = sc.transform(predict_data)
